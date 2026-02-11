@@ -1,0 +1,29 @@
+# Secrets and credentials
+.env
+credentials.json
+token.json
+.streamlit/secrets.toml
+
+# Temporary files
+.tmp/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Downloaded data (regenerated at runtime)
+delayed_publications/
+delayed_publication_*.csv
+
+# Large archives
+bond_indices_review.zip
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+nul

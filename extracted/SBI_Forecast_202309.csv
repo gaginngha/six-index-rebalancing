@@ -1,0 +1,27 @@
+Admission Date;Cancellation Date;ISIN;Coupon;Name;Maturity Date;Sector;Composite Rating;Issue Amount in CHF;Guarantee Type & Collateral;Comment;Capital increase/decrease;Updated on
+01.09.2023;31.05.2027;CH1271007911;1.95;Glarner Kantonalbank;09.05.2028;DN;AA;110000000;59100;Admission;;30.08.2023 10:28
+01.09.2023;31.12.2042;CH1280154290;1.75;Pfandbriefbank schweizerischer Hypothekarinstitute;23.12.2043;DN;AAA;600000000;62100;Admission;;30.08.2023 10:28
+01.09.2023;31.08.2028;CH1266847255;1.8;Walliser Kantonalbank;29.08.2029;DN;AA;185000000;59100;Admission;;30.08.2023 10:28
+01.09.2023;29.09.2028;CH1266847263;1.8;Pfandbriefzentrale der schweizerischen Kantonalbanken;10.09.2029;DN;AAA;145000000;62100;Admission;;30.08.2023 10:28
+01.09.2023;30.09.2032;CH1266847271;1.85;Pfandbriefzentrale der schweizerischen Kantonalbanken;22.09.2033;DN;AAA;430000000;62100;Admission;;30.08.2023 10:28
+01.09.2023;30.11.2037;CH1266847289;1.85;Pfandbriefzentrale der schweizerischen Kantonalbanken;26.11.2038;DN;AAA;425000000;62100;Admission;;30.08.2023 10:28
+01.09.2023;31.08.2032;CH1282304489;1.5525;Asian Development Bank;03.08.2033;FS;AAA;115000000;55100;Admission;;30.08.2023 10:28
+01.09.2023;29.08.2025;CH1266847230;1.6;Municipality Finance PLC;04.08.2026;FG;AA;100000000;57100;Admission;;30.08.2023 10:28
+01.09.2023;31.08.2026;CH1280994281;1.87;Lloyds Bank Plc.;31.08.2027;FC;AAA;440000000;62100;Admission;;30.08.2023 10:28
+01.09.2023;29.09.2023;CH0249483683;1;Schweizerische Rückversicherungs-Gesellschaft AG;17.09.2024;DN;A;250000000;71100;Rating change;;30.08.2023 10:28
+01.09.2023;30.01.2026;CH0262881441;0.75;Schweizerische Rückversicherungs-Gesellschaft AG;21.01.2027;DN;A;250000000;71100;Rating change;;30.08.2023 10:28
+01.09.2023;30.11.2028;CH0461238880;0.6;VP Bank AG;29.11.2029;DN;BBB;155000000;71100;Rating change;;30.08.2023 10:28
+01.09.2023;31.07.2031;CH1218301955;2.125;Pfandbriefbank schweizerischer Hypothekarinstitute;07.07.2032;DN;AAA;500000000;62100;Capital increase;300000000;30.08.2023 10:28
+01.09.2023;31.07.2031;CH1279293000;1.95;Zuger Kantonalbank AG;07.07.2032;DN;AAA;150000000;59100;Rating change;;30.08.2023 10:28
+01.09.2023;31.12.2026;CH0461238997;0.02;Transpower New Zealand Limited;16.12.2027;FC;AA;125000000;71100;ICB supersector reclassification from 7500 to 16100 and segment reclassification from Foreign Corporate to Foreign Government;;30.08.2023 10:28
+01.09.2023;31.03.2028;CH0522158838;0.0375;Transpower New Zealand Limited;16.03.2029;FC;AA;160000000;71100;ICB supersector reclassification from 7500 to 16100 and segment reclassification from Foreign Corporate to Foreign Government;;30.08.2023 10:28
+01.09.2023;30.07.2027;CH1271360609;1.6275;NRW.BANK;27.07.2028;FC;AA;100000000;59100;ICB supersector reclassification from 8300 to 16100 and segment reclassification from Foreign Corporate to Foreign Government;;30.08.2023 10:28
+;31.08.2023;CH0258586384;0.75;Pfandbriefbank schweizerischer  Hypothekarinstitute;23.08.2024;DN;AAA;1000000000;62100;Deletion;;30.08.2023 10:28
+;31.08.2023;CH0311427618;0.2;Walliser Kantonalbank;19.08.2024;DN;AA;125000000;59100;Deletion;;30.08.2023 10:28
+;31.08.2023;CH0392885791;1.5;Kernkraftwerk Leibstadt AG;07.08.2024;DN;BBB;125000000;71100;Deletion;;30.08.2023 10:28
+;31.08.2023;CH0235834154;1.5;Deutsche Bahn Finance GmbH, Berlin;26.08.2024;FC;AA;300000000;71100;Deletion;;30.08.2023 10:28
+;31.08.2023;CH0247902890;1;Total Capital International SA;29.08.2024;FC;A;800000000;71100;Deletion;;30.08.2023 10:28
+;31.08.2023;CH0350030414;0.2;ASB Bank Limited;02.08.2024;FC;A;200000000;71100;Deletion;;30.08.2023 10:28
+;31.08.2023;CH0465767785;0.384;Banco Santander-Chile;27.09.2024;FC;A;110215000;71100;Deletion;;30.08.2023 10:28
+;31.08.2023;CH0190361029;1.25;Nederlandse Waterschapsbank N.V.;09.08.2024;FG;AAA;100000000;57100;Deletion;;30.08.2023 10:28
+;31.08.2023;CH0188927450;1.5;European Investment Bank EIB;02.08.2024;FS;AAA;600000000;55100;Deletion;;30.08.2023 10:28

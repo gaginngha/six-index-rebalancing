@@ -1,0 +1,21 @@
+{
+  "aum": {
+    "sbi_aaa_bbb_total": 3000000000,
+    "sbi_corporate": 500000000,
+    "sbi_foreign": 800000000,
+    "sbi_domestic": 2000000000
+  },
+  "notes": {
+    "sbi_aaa_bbb_total": "Main SBI AAA-BBB tracker fund (~3 Mrd CHF)",
+    "sbi_corporate": "Corporate-only trackers",
+    "sbi_foreign": "Foreign segment trackers",
+    "sbi_domestic": "Domestic focused funds"
+  },
+  "rebalancing": {
+    "cut_off_day": 20,
+    "effective_date": "first_trading_day_of_month",
+    "min_nominal_chf": 100000000,
+    "min_residual_years": 1,
+    "min_rating": "BBB"
+  }
+}

@@ -1,0 +1,56 @@
+Admission Date;Cancellation Date;ISIN;Coupon;Name;Maturity Date;Sector;Composite Rating;Issue Amount in CHF;Guarantee Type & Collateral;Comment;Capital increase/decrease;Updated on
+01.02.2022;31.07.2029;CH1148728111;0.2;Zürcher Kantonalbank;31.07.2030;DN;AAA;350000000;59100;Admission;;31.01.2022 11:09
+01.02.2022;29.02.2036;CH1151526196;0.375;Pfandbriefbank schweizerischer Hypothekarinstitute;16.02.2037;DN;AAA;225000000;62100;Admission;;31.01.2022 11:09
+01.02.2022;29.02.2028;CH1151526170;0.125;Pfandbriefbank schweizerischer Hypothekarinstitute;19.02.2029;DN;AAA;270000000;62100;Admission;;31.01.2022 11:09
+01.02.2022;31.01.2029;CH0522158986;0.25;Luzerner Kantonalbank AG;24.01.2030;DN;AA;225000000;59100;Admission;;31.01.2022 11:09
+01.02.2022;31.07.2030;CH0522158978;0.35;St.Galler Kantonalbank AG;31.07.2031;DN;AA;310000000;59100;Admission;;31.01.2022 11:09
+01.02.2022;31.01.2029;CH1158693296;0.3;Zuger Kantonalbank AG;31.01.2030;DN;AAA;140000000;59100;Admission;;31.01.2022 11:09
+01.02.2022;31.01.2029;CH1148728129;0.85;Berner Kantonalbank AG;21.01.2032;DN;A;200000000;71200;Admission;;31.01.2022 11:09
+01.02.2022;31.07.2025;CH1154887132;0.375;Holcim Helvetia Finance Ltd;19.10.2026;DN;BBB;325000000;71100;Admission;;31.01.2022 11:09
+01.02.2022;31.10.2030;CH1154887140;1;Holcim Helvetia Finance Ltd;19.01.2032;DN;BBB;100000000;71100;Admission;;31.01.2022 11:09
+01.02.2022;31.07.2025;CH0522158994;0.01;Basellandschaftliche Kantonalbank;28.07.2026;DN;AA;200000000;59100;Admission;;31.01.2022 11:09
+01.02.2022;30.07.2027;CH1160382896;0.22;Crédit Agricole next bank (Suisse) SA;28.07.2028;DN;AAA;100000000;62100;Admission;;31.01.2022 11:09
+01.02.2022;31.01.2029;CH1154887116;0.41;Credit Agricole S.A., London Branch;18.01.2030;FC;AA;125000000;71100;Admission;;31.01.2022 11:09
+01.02.2022;30.01.2026;CH1142512347;0.5275;BNP Paribas;20.01.2028;FC;A;220000000;71100;Admission;;31.01.2022 11:09
+01.02.2022;30.04.2026;CH1142512339;0.5994;Banco de Crédito e Inversiones;26.04.2027;FC;A;200000000;71100;Admission;;31.01.2022 11:09
+01.02.2022;31.01.2023;CH1160112814;0.465;Doha Finance Ltd;24.01.2024;FC;BBB;175000000;71100;Admission;;31.01.2022 11:09
+01.02.2022;30.01.2026;CH1159841332;0.28;Societe Generale;26.01.2027;FC;A;160000000;71100;Admission;;31.01.2022 11:09
+01.02.2022;29.01.2027;CH1159841340;0.745;Societe Generale;26.01.2029;FC;BBB;100000000;71100;Admission;;31.01.2022 11:09
+01.02.2022;30.06.2031;CH0344958688;0.5;Schweizerische Eidgenossenschaft;27.06.2032;DG;AAA;2524950000;51100;Capital increase;249150000;31.01.2022 11:09
+01.02.2022;30.07.2038;CH0440081401;0;Schweizerische Eidgenossenschaft;24.07.2039;DG;AAA;2272160000;51100;Capital increase;236450000;31.01.2022 11:09
+01.02.2022;31.12.2030;CH1151526154;0.125;Pfandbriefbank schweizerischer Hypothekarinstitute;19.12.2031;DN;AAA;920000000;62100;Capital increase;520000000;31.01.2022 11:09
+01.02.2022;31.10.2023;CH0341725858;0.3;Electricité de France;14.10.2024;FC;BBB;400000000;71100;Rating change;;31.01.2022 11:09
+01.02.2022;29.10.2027;CH0341725866;0.65;Electricité de France;13.10.2028;FC;BBB;150000000;71100;Rating change;;31.01.2022 11:09
+;31.01.2022;CH0228622384;1.5;Pfandbriefbank schweizerischer  Hypothekarinstitute;16.01.2023;DN;AAA;435000000;62100;Deletion;;31.01.2022 11:09
+;31.01.2022;CH0232698719;1.5;Zürcher Kantonalbank;27.01.2023;DN;AAA;100000000;59100;Deletion;;31.01.2022 11:09
+;31.01.2022;CH0266437950;0.375;Luzerner Kantonalbank AG;30.01.2023;DN;AA;400000000;59100;Deletion;;31.01.2022 11:09
+;31.01.2022;CH0307256419;0;Kanton Schwyz;20.01.2023;DN;AAA;125000000;59100;Deletion;;31.01.2022 11:09
+;31.01.2022;CH0122526608;2.625;ENAG Energiefinanzierungs AG;31.01.2023;DN;BBB;180000000;71100;Deletion, Admission due to new SBI composite rating methodology;;31.01.2022 11:09
+;31.01.2022;CH0309761853;0.25;National Australia Bank Limited;19.01.2023;FC;AA;300000000;71100;Deletion;;31.01.2022 11:09
+;31.01.2022;CH0391648026;0.375;ADCB Finance (Cayman) Limited;23.01.2023;FC;A;175000000;71100;Deletion;;31.01.2022 11:09
+;31.01.2022;CH0023960328;2.375;Nederlandse Waterschapsbank N.V.;27.01.2023;FG;AAA;400000000;57100;Deletion;;31.01.2022 11:09
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;

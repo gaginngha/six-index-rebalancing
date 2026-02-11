@@ -1,0 +1,59 @@
+Admission Date;Cancellation Date;ISIN;Coupon;Name;Maturity Date;Sector;Composite Rating;Issue Amount in CHF;Guarantee Type & Collateral;Comment;Capital increase/decrease;Updated on
+03.02.2020;30.11.2043;CH0485260902;0.1;Freiburger Kantonalbank;01.11.2044;DN;AA;140000000;59100;Admission;;29.01.2020 10:56
+03.02.2020;31.01.2030;CH0461239086;0.05;Basellandschaftliche Kantonalbank;28.01.2031;DN;AA;250000000;59100;Admission;;29.01.2020 10:56
+03.02.2020;30.06.2027;CH0461239102;0;Swissgrid AG;30.06.2028;DN;AA;150000000;71100;Admission;;29.01.2020 10:56
+03.02.2020;30.06.2031;CH0461239110;0.2;Swissgrid AG;30.06.2032;DN;AA;150000000;71100;Admission;;29.01.2020 10:56
+03.02.2020;31.03.2031;CH0461239136;0.125;Pfandbriefzentrale der schweizerischen Kantonalbanken;23.03.2032;DN;AAA;367000000;62100;Admission;;29.01.2020 10:56
+03.02.2020;28.11.2025;CH0461238864;0.375;Stadler Rail AG;20.11.2026;DN;BBB;300000000;71100;Admission;;29.01.2020 10:56
+03.02.2020;30.07.2027;CH0517825268;0.125;Jackson National Life Global Funding;14.07.2028;FC;AA;300000000;65100;Admission;;29.01.2020 10:56
+03.02.2020;30.07.2027;CH0517825284;0.1275;Credit Agricole S.A.  London Branch;27.07.2028;FC;A;130000000;71100;Admission;;29.01.2020 10:56
+03.02.2020;30.07.2027;CH0461239094;0.111;BNZ International Funding Ltd;24.07.2028;FC;AA;300000000;71100;Admission;;29.01.2020 10:56
+03.02.2020;31.01.2028;CH0517825326;0.065;National Australia Bank Limited;29.01.2029;FC;AA;200000000;71100;Admission;;29.01.2020 10:56
+03.02.2020;30.06.2023;CH0240109618;1.875;GZO AG;12.06.2024;DN;BBB;170000000;71100;Rating change;;29.01.2020 10:56
+03.02.2020;29.12.2034;CH0307256450;0.6;Pfandbriefzentrale der schweizerischen Kantonalbanken;11.12.2035;DN;AAA;896000000;62100;Capital increase;264000000;29.01.2020 10:56
+03.02.2020;31.10.2035;CH0338330472;0.25;Pfandbriefbank schweizerischer  Hypothekarinstitute;14.10.2036;DN;AAA;400000000;62100;Capital increase;150000000;29.01.2020 10:56
+03.02.2020;30.06.2044;CH0344958498;0.5;Schweizerische Eidgenossenschaft;28.06.2045;DG;AAA;1460725000;51100;Capital increase;162100000;29.01.2020 10:56
+03.02.2020;30.11.2027;CH0373476693;0.5;Pfandbriefzentrale der schweizerischen Kantonalbanken;24.11.2028;DN;AAA;899000000;62100;Capital increase;714000000;29.01.2020 10:56
+03.02.2020;30.06.2031;CH0344958688;0.5;Schweizerische Eidgenossenschaft;27.06.2032;DG;AAA;1144300000;51100;Capital increase;179950000;29.01.2020 10:56
+03.02.2020;29.11.2024;CH0423233516;0.25;Pfandbriefbank schweizerischer Hypothekarinstitute;17.11.2025;DN;AAA;570000000;62100;Capital increase;100000000;29.01.2020 10:56
+03.02.2020;31.05.2028;CH0474977698;0.125;Pfandbriefbank schweizerischer Hypothekarinstitute;08.05.2029;DN;AAA;650000000;62100;Capital increase;400000000;29.01.2020 10:56
+03.02.2020;31.10.2022;CH0136594337;1.625;EBN B.V.;03.10.2023;FC;AAA;150000000;71100;Rating change;;29.01.2020 10:56
+03.02.2020;31.07.2023;CH0185843015;1.125;EBN B.V.;04.07.2024;FC;AAA;125000000;71100;Rating change;;29.01.2020 10:56
+03.02.2020;30.09.2021;CH0253225921;0.5;EBN B.V.;22.09.2022;FC;AAA;175000000;71100;Rating change;;29.01.2020 10:56
+03.02.2020;30.09.2025;CH0253225954;0.875;EBN B.V.;22.09.2026;FC;AAA;125000000;71100;Rating change;;29.01.2020 10:56
+03.02.2020;31.07.2024;CH0373945044;0.375;Jackson National Life Global Funding;18.07.2025;FC;AA;275000000;71100;Asset Type Code change from 71100 to 65100;;29.01.2020 10:56
+03.02.2020;30.12.2022;CH0423233565;0.3;Jackson National Life Global Funding;18.12.2023;FC;AA;200000000;71100;Asset Type Code change from 71100 to 65100;;29.01.2020 10:56
+;31.01.2020;CH0023991182;2.375;Pfandbriefbank schweizerischer Hypothekarinstitute  Zürich;27.01.2021;DN;AAA;925000000;62100;Deletion;;29.01.2020 10:56
+;31.01.2020;CH0122456756;2;Zürcher Kantonalbank;21.01.2021;DN;AAA;400000000;59100;Deletion;;29.01.2020 10:56
+;31.01.2020;CH0266153656;0.25;St.Galler Kantonalbank AG;28.01.2021;DN;AA;300000000;59100;Deletion;;29.01.2020 10:56
+;31.01.2020;CH0122955377;2.25;DNB Boligkreditt AS;25.01.2021;FC;AAA;160000000;62100;Deletion;;29.01.2020 10:56
+;31.01.2020;CH0122811554;2.25;Danske Bank A/S;19.01.2021;FC;AAA;100000000;62100;Deletion;;29.01.2020 10:56
+;31.01.2020;CH0368697733;2;Multibank Inc;11.01.2021;FC;BBB;100000000;71100;Deletion;;29.01.2020 10:56
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
