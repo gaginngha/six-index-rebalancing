@@ -36,6 +36,73 @@ st.set_page_config(
     layout="wide"
 )
 
+# Dark Finance Theme CSS
+DARK_CSS = """
+<style>
+/* Metric cards */
+[data-testid="stMetric"] {
+    background: #1a1f2e;
+    border: 1px solid #2d3548;
+    border-radius: 8px;
+    padding: 16px;
+}
+[data-testid="stMetricValue"] { color: #e6edf3; font-weight: 600; }
+[data-testid="stMetricLabel"] { color: #8b949e; }
+
+/* Expanders */
+[data-testid="stExpander"] {
+    border: 1px solid #2d3548;
+    border-radius: 8px;
+    background: #1a1f2e;
+}
+
+/* Alert boxes */
+[data-testid="stAlert"] > div[data-baseweb="notification"] {
+    border-radius: 6px;
+}
+
+/* Buttons */
+.stDownloadButton > button {
+    background: transparent;
+    border: 1px solid #2d3548;
+    color: #e6edf3;
+    border-radius: 6px;
+}
+.stDownloadButton > button:hover {
+    border-color: #00d4aa;
+    color: #00d4aa;
+}
+
+/* Horizontal rules */
+hr { border-color: #2d3548 !important; }
+
+/* Tab styling */
+.stTabs [data-baseweb="tab"] { color: #8b949e; }
+.stTabs [aria-selected="true"] { color: #e6edf3; }
+</style>
+"""
+st.markdown(DARK_CSS, unsafe_allow_html=True)
+
+# Plotly dark layout template
+PLOTLY_LAYOUT = dict(
+    paper_bgcolor="#0e1117",
+    plot_bgcolor="#0e1117",
+    font=dict(color="#e6edf3", size=12),
+    xaxis=dict(gridcolor="#2d3548", zerolinecolor="#2d3548", tickfont=dict(color="#8b949e")),
+    hoverlabel=dict(bgcolor="#242b3d", font_color="#e6edf3", bordercolor="#2d3548"),
+)
+# Separate constants so callers can override without duplicate-kwarg TypeError
+YAXIS_STYLE = dict(gridcolor="#2d3548", zerolinecolor="#2d3548", tickfont=dict(color="#8b949e"))
+LEGEND_STYLE = dict(font=dict(color="#8b949e"), bgcolor="rgba(0,0,0,0)")
+
+CHART_COLORS = ["#00d4aa", "#58a6ff", "#d4a017", "#ff6b6b", "#8b5cf6", "#06b6d4", "#f59e0b", "#ef4444"]
+
+# Semantic color aliases
+COLOR_POSITIVE = CHART_COLORS[0]   # #00d4aa - teal/green for admissions, positive values
+COLOR_PRIMARY  = CHART_COLORS[1]   # #58a6ff - blue for duration, netto, primary lines
+COLOR_ACCENT   = CHART_COLORS[2]   # #d4a017 - gold for rolling averages, secondary
+COLOR_NEGATIVE = CHART_COLORS[3]   # #ff6b6b - red for exits, deletions, negative values
+
 # Password protection
 def check_password():
     """Returns True if the user has entered the correct password."""
@@ -144,7 +211,7 @@ if data_loaded:
             segment_display.columns = ['Segment', 'Anzahl', 'Gewicht %', 'Duration']
             segment_display['Gewicht %'] = segment_display['Gewicht %'].round(1)
             segment_display['Duration'] = segment_display['Duration'].round(2)
-            st.dataframe(segment_display, hide_index=True, use_container_width=True)
+            st.dataframe(segment_display, hide_index=True, width='stretch')
 
         with col2:
             st.subheader("Rating Breakdown")
@@ -153,7 +220,7 @@ if data_loaded:
             rating_display.columns = ['Rating', 'Anzahl', 'Gewicht %', 'Duration']
             rating_display['Gewicht %'] = rating_display['Gewicht %'].round(1)
             rating_display['Duration'] = rating_display['Duration'].round(2)
-            st.dataframe(rating_display, hide_index=True, use_container_width=True)
+            st.dataframe(rating_display, hide_index=True, width='stretch')
 
         st.markdown("---")
 
@@ -164,7 +231,7 @@ if data_loaded:
         top_display['weight_pct'] = top_display['weight_pct'].round(3)
         top_display['duration'] = top_display['duration'].round(2)
         top_display.columns = ['ISIN', 'Name', 'Gewicht %', 'Duration', 'Rating', 'Sektor']
-        st.dataframe(top_display, hide_index=True, use_container_width=True)
+        st.dataframe(top_display, hide_index=True, width='stretch')
 
     # ============ TAB 2: Flow Analysis ============
     with tab2:
@@ -305,7 +372,7 @@ if data_loaded:
                     dur_display['current_mcap'] = (dur_display['current_mcap'] / 1e9).round(2)
                     dur_display['new_mcap'] = (dur_display['new_mcap'] / 1e9).round(2)
                     dur_display.columns = ['Segment', 'MCap Akt. (Mrd)', 'MCap Neu (Mrd)', 'Dur. Aktuell', 'Dur. Neu', 'Δ Duration', 'Admissions', 'Deletions']
-                    st.dataframe(dur_display, hide_index=True, use_container_width=True)
+                    st.dataframe(dur_display, hide_index=True, width='stretch')
 
                 # Per-segment bond-level detail
                 st.markdown("**Bond-Level Duration Detail pro Segment**")
@@ -329,7 +396,7 @@ if data_loaded:
                         if len(adm_detail) > 0:
                             adm_show = adm_detail[['isin', 'name', 'rating', 'nominal_mio', 'duration', 'weight_pct', 'duration_source']].copy()
                             adm_show.columns = ['ISIN', 'Name', 'Rating', 'Nom (Mio)', 'Duration', 'Gew %', 'Quelle']
-                            st.dataframe(adm_show, hide_index=True, use_container_width=True, height=300)
+                            st.dataframe(adm_show, hide_index=True, width='stretch', height=300)
                         else:
                             st.info("Keine Admissions in diesem Segment")
 
@@ -338,7 +405,7 @@ if data_loaded:
                         if len(del_detail) > 0:
                             del_show = del_detail[['isin', 'name', 'rating', 'nominal_mio', 'duration', 'weight_pct', 'duration_source']].copy()
                             del_show.columns = ['ISIN', 'Name', 'Rating', 'Nom (Mio)', 'Duration', 'Gew %', 'Quelle']
-                            st.dataframe(del_show, hide_index=True, use_container_width=True, height=300)
+                            st.dataframe(del_show, hide_index=True, width='stretch', height=300)
                         else:
                             st.info("Keine Deletions in diesem Segment")
 
@@ -389,7 +456,7 @@ if data_loaded:
                     sim_display = sim_df[['segment_name', 'current_duration', 'new_duration', 'duration_change', 'bond_weight_pct', 'current_mcap_mrd', 'new_mcap_mrd']].copy()
                     sim_display.columns = ['Segment', 'Dur. Aktuell', 'Dur. Neu', 'Δ Duration', 'Gewicht %', 'MCap Akt. (Mrd)', 'MCap Neu (Mrd)']
 
-                    st.dataframe(sim_display, hide_index=True, use_container_width=True)
+                    st.dataframe(sim_display, hide_index=True, width='stretch')
 
                     # Highlight key numbers
                     total_sim = sim_df[sim_df['segment'] == 'total'].iloc[0]
@@ -415,7 +482,7 @@ if data_loaded:
                     'Anzahl': count,
                     'Flow (Mio CHF)': round(flow / 1e6, 2)
                 })
-            st.dataframe(pd.DataFrame(event_data), hide_index=True, use_container_width=True)
+            st.dataframe(pd.DataFrame(event_data), hide_index=True, width='stretch')
 
             st.markdown("---")
 
@@ -442,7 +509,7 @@ if data_loaded:
             display_df['est_weight_pct'] = display_df['est_weight_pct'].round(3)
             display_df.columns = ['ISIN', 'Name', 'Event', 'Richtung', 'Flow (Mio)', 'Gewicht %', 'Rating']
 
-            st.dataframe(display_df.sort_values('Flow (Mio)', ascending=False), hide_index=True, use_container_width=True)
+            st.dataframe(display_df.sort_values('Flow (Mio)', ascending=False), hide_index=True, width='stretch')
         else:
             st.info("Keine Flow-Events gefunden.")
 
@@ -459,7 +526,7 @@ if data_loaded:
                 adm_display = admissions[['isin', 'name', 'nominal', 'rating', 'admission_date']].copy()
                 adm_display['nominal'] = (adm_display['nominal'] / 1e6).round(0).astype(int)
                 adm_display.columns = ['ISIN', 'Name', 'Nominal (Mio)', 'Rating', 'Datum']
-                st.dataframe(adm_display, hide_index=True, use_container_width=True)
+                st.dataframe(adm_display, hide_index=True, width='stretch')
                 st.write(f"**Total: {len(admissions)} Bonds, CHF {admissions['nominal'].sum()/1e6:.0f} Mio**")
             else:
                 st.info("Keine Admissions geplant")
@@ -471,7 +538,7 @@ if data_loaded:
                 del_display = deletions[['isin', 'name', 'nominal', 'rating', 'cancellation_date']].copy()
                 del_display['nominal'] = (del_display['nominal'] / 1e6).round(0).astype(int)
                 del_display.columns = ['ISIN', 'Name', 'Nominal (Mio)', 'Rating', 'Datum']
-                st.dataframe(del_display, hide_index=True, use_container_width=True)
+                st.dataframe(del_display, hide_index=True, width='stretch')
                 st.write(f"**Total: {len(deletions)} Bonds, CHF {deletions['nominal'].sum()/1e6:.0f} Mio**")
             else:
                 st.info("Keine Deletions geplant")
@@ -485,7 +552,7 @@ if data_loaded:
             cap_display = cap_changes[['isin', 'name', 'capital_change', 'rating']].copy()
             cap_display['capital_change'] = (cap_display['capital_change'] / 1e6).round(0).astype(int)
             cap_display.columns = ['ISIN', 'Name', 'Änderung (Mio)', 'Rating']
-            st.dataframe(cap_display, hide_index=True, use_container_width=True)
+            st.dataframe(cap_display, hide_index=True, width='stretch')
         else:
             st.info("Keine Capital Changes geplant")
 
@@ -498,7 +565,7 @@ if data_loaded:
             exit_display = exits[['isin', 'name', 'remaining_years', 'rating']].head(20).copy()
             exit_display['remaining_years'] = exit_display['remaining_years'].round(2)
             exit_display.columns = ['ISIN', 'Name', 'Rest-Laufzeit (Jahre)', 'Rating']
-            st.dataframe(exit_display, hide_index=True, use_container_width=True)
+            st.dataframe(exit_display, hide_index=True, width='stretch')
             st.write(f"**Total: {len(exits)} Bonds fallen in den nächsten 6 Monaten raus**")
         else:
             st.info("Keine Bonds fallen in den nächsten 6 Monaten raus")
@@ -662,9 +729,10 @@ if data_loaded:
                     segment_turnover = segment_turnover[segment_turnover['turnover_chf'] > 0]
                     if not segment_turnover.empty:
                         fig1 = px.pie(segment_turnover, values='turnover_chf', names='sector_code',
-                                     title='', hole=0.4)
-                        fig1.update_layout(height=350)
-                        st.plotly_chart(fig1, use_container_width=True)
+                                     title='', hole=0.4,
+                                     color_discrete_sequence=CHART_COLORS)
+                        fig1.update_layout(height=350, yaxis=YAXIS_STYLE, legend=LEGEND_STYLE, **PLOTLY_LAYOUT)
+                        st.plotly_chart(fig1, width='stretch')
                     else:
                         st.info("Keine Segment-Daten für Filter")
 
@@ -675,9 +743,10 @@ if data_loaded:
                     rating_turnover = rating_turnover[rating_turnover['turnover_chf'] > 0]
                     if not rating_turnover.empty:
                         fig2 = px.bar(rating_turnover, x='rating', y='turnover_chf',
-                                     labels={'rating': 'Rating', 'turnover_chf': 'Turnover CHF'})
-                        fig2.update_layout(height=350)
-                        st.plotly_chart(fig2, use_container_width=True)
+                                     labels={'rating': 'Rating', 'turnover_chf': 'Turnover CHF'},
+                                     color_discrete_sequence=[CHART_COLORS[1]])
+                        fig2.update_layout(height=350, yaxis=YAXIS_STYLE, legend=LEGEND_STYLE, **PLOTLY_LAYOUT)
+                        st.plotly_chart(fig2, width='stretch')
                     else:
                         st.info("Keine Rating-Daten für Filter")
 
@@ -686,9 +755,10 @@ if data_loaded:
             if 'file_date' in filtered_df.columns and 'turnover_chf' in filtered_df.columns:
                 daily_turnover = filtered_df.groupby('file_date')['turnover_chf'].sum().reset_index()
                 fig3 = px.bar(daily_turnover, x='file_date', y='turnover_chf',
-                             labels={'file_date': 'Datum', 'turnover_chf': 'Turnover CHF'})
-                fig3.update_layout(height=300)
-                st.plotly_chart(fig3, use_container_width=True)
+                             labels={'file_date': 'Datum', 'turnover_chf': 'Turnover CHF'},
+                             color_discrete_sequence=[CHART_COLORS[0]])
+                fig3.update_layout(height=300, yaxis=YAXIS_STYLE, legend=LEGEND_STYLE, **PLOTLY_LAYOUT)
+                st.plotly_chart(fig3, width='stretch')
 
             # Top bonds by turnover - with expandable trade details
             st.subheader("Top 15 Bonds (aufklappbar mit Yield)")
@@ -739,14 +809,58 @@ if data_loaded:
                         if 'trade_yield' in trades_sorted.columns:
                             trade_cols.append('trade_yield')
                         trade_display = trades_sorted[[c for c in trade_cols if c in trades_sorted.columns]].copy()
-                        if 'turnover_chf' in trade_display.columns:
-                            trade_display['turnover_chf'] = trade_display['turnover_chf'].round(0)
                         if 'trade_price' in trade_display.columns:
                             trade_display['trade_price'] = trade_display['trade_price'].round(3)
                         if 'trade_yield' in trade_display.columns:
-                            trade_display['trade_yield'] = trade_display['trade_yield'].round(3)
-                        trade_display = trade_display.rename(columns={'file_date': 'Datum', 'trade_price': 'Preis', 'trade_size': 'Volumen', 'turnover_chf': 'Turnover', 'trade_yield': 'Yield %'})
-                        st.dataframe(trade_display, hide_index=True, use_container_width=True)
+                            trade_display['trade_yield'] = trade_display['trade_yield'].apply(
+                                lambda x: f"{x:.3f}%" if pd.notna(x) else ""
+                            )
+                        if 'turnover_chf' in trade_display.columns:
+                            trade_display['turnover_chf'] = trade_display['turnover_chf'].apply(
+                                lambda x: f"{x:,.0f}".replace(",", "'") if pd.notna(x) else ""
+                            )
+                        if 'trade_size' in trade_display.columns:
+                            trade_display['trade_size'] = trade_display['trade_size'].apply(
+                                lambda x: f"{x:,.0f}".replace(",", "'") if pd.notna(x) else ""
+                            )
+                        trade_display = trade_display.rename(columns={'file_date': 'Datum', 'trade_price': 'Preis', 'trade_size': 'Volumen', 'turnover_chf': 'Turnover', 'trade_yield': 'Yield'})
+                        st.dataframe(trade_display, hide_index=True, width='stretch')
+
+            st.markdown("---")
+
+            # All trades table (sortable by volume)
+            st.subheader("📋 Alle Trades (sortierbar)")
+            st.markdown("*Klicke auf eine Spaltenüberschrift zum Sortieren*")
+
+            if 'product_isin' in filtered_df.columns:
+                all_trades_df = filtered_df.copy()
+                all_trades_cols = ['file_date', 'product_isin', 'product_short_name', 'sector_code', 'rating',
+                                   'trade_price', 'trade_yield', 'trade_size', 'turnover_chf']
+                all_trades_available = [c for c in all_trades_cols if c in all_trades_df.columns]
+                all_trades_display = all_trades_df[all_trades_available].sort_values('trade_size', ascending=False).copy()
+
+                if 'trade_price' in all_trades_display.columns:
+                    all_trades_display['trade_price'] = all_trades_display['trade_price'].round(3)
+                if 'trade_yield' in all_trades_display.columns:
+                    all_trades_display['trade_yield'] = all_trades_display['trade_yield'].apply(
+                        lambda x: f"{x:.3f}%" if pd.notna(x) else ""
+                    )
+                if 'turnover_chf' in all_trades_display.columns:
+                    all_trades_display['turnover_chf'] = all_trades_display['turnover_chf'].apply(
+                        lambda x: f"{x:,.0f}".replace(",", "'") if pd.notna(x) else ""
+                    )
+                if 'trade_size' in all_trades_display.columns:
+                    all_trades_display['trade_size'] = all_trades_display['trade_size'].apply(
+                        lambda x: f"{x:,.0f}".replace(",", "'") if pd.notna(x) else ""
+                    )
+
+                all_trades_col_names = {
+                    'file_date': 'Datum', 'product_isin': 'ISIN', 'product_short_name': 'Name',
+                    'sector_code': 'Segment', 'rating': 'Rating', 'trade_price': 'Preis',
+                    'trade_yield': 'Yield', 'trade_size': 'Volumen', 'turnover_chf': 'Turnover'
+                }
+                all_trades_display = all_trades_display.rename(columns=all_trades_col_names)
+                st.dataframe(all_trades_display, hide_index=True, width='stretch', height=500)
 
             st.markdown("---")
 
@@ -761,23 +875,24 @@ if data_loaded:
                         seg_yield = valid_df.groupby('sector_code').apply(lambda x: (x['trade_yield'] * x['turnover_chf']).sum() / x['turnover_chf'].sum() if x['turnover_chf'].sum() > 0 else None).reset_index(name='VW Yield %')
                         seg_yield = seg_yield[seg_yield['VW Yield %'].notna()]
                         seg_yield['VW Yield %'] = seg_yield['VW Yield %'].round(3)
-                        st.dataframe(seg_yield, hide_index=True, use_container_width=True)
+                        st.dataframe(seg_yield, hide_index=True, width='stretch')
                 with col2:
                     st.markdown("**VW Yield nach Rating**")
                     if 'rating' in valid_df.columns:
                         rat_yield = valid_df.groupby('rating').apply(lambda x: (x['trade_yield'] * x['turnover_chf']).sum() / x['turnover_chf'].sum() if x['turnover_chf'].sum() > 0 else None).reset_index(name='VW Yield %')
                         rat_yield = rat_yield[rat_yield['VW Yield %'].notna()]
                         rat_yield['VW Yield %'] = rat_yield['VW Yield %'].round(3)
-                        st.dataframe(rat_yield, hide_index=True, use_container_width=True)
+                        st.dataframe(rat_yield, hide_index=True, width='stretch')
 
                 st.markdown("**Yield pro Tag**")
                 if 'file_date' in valid_df.columns:
                     daily_y = valid_df.groupby('file_date').apply(lambda x: (x['trade_yield'] * x['turnover_chf']).sum() / x['turnover_chf'].sum() if x['turnover_chf'].sum() > 0 else None).reset_index(name='vw_yield')
                     daily_y = daily_y[daily_y['vw_yield'].notna()]
                     if not daily_y.empty:
-                        fig_y = px.line(daily_y, x='file_date', y='vw_yield', labels={'file_date': 'Datum', 'vw_yield': 'VW Yield %'}, markers=True)
-                        fig_y.update_layout(height=300)
-                        st.plotly_chart(fig_y, use_container_width=True)
+                        fig_y = px.line(daily_y, x='file_date', y='vw_yield', labels={'file_date': 'Datum', 'vw_yield': 'VW Yield %'}, markers=True,
+                                        color_discrete_sequence=[CHART_COLORS[0]])
+                        fig_y.update_layout(height=300, yaxis=YAXIS_STYLE, legend=LEGEND_STYLE, **PLOTLY_LAYOUT)
+                        st.plotly_chart(fig_y, width='stretch')
             else:
                 st.info("Yield nur für Index-Mitglieder berechenbar")
 
@@ -788,15 +903,16 @@ if data_loaded:
             display_cols = ['file_date', 'product_isin', 'product_short_name', 'sector_code', 'rating', 'trade_price', 'trade_yield', 'trade_size', 'turnover_chf']
             available_cols = [c for c in display_cols if c in filtered_df.columns]
             detail_df = filtered_df[available_cols].copy()
-            if 'turnover_chf' in detail_df.columns:
-                detail_df['turnover_chf'] = detail_df['turnover_chf'].round(0)
             if 'trade_price' in detail_df.columns:
                 detail_df['trade_price'] = detail_df['trade_price'].round(2)
-            if 'trade_yield' in detail_df.columns:
-                detail_df['trade_yield'] = detail_df['trade_yield'].round(3)
-            col_names = {'file_date': 'Datum', 'product_isin': 'ISIN', 'product_short_name': 'Name', 'sector_code': 'Segment', 'rating': 'Rating', 'trade_price': 'Preis', 'trade_yield': 'Yield %', 'trade_size': 'Volume', 'turnover_chf': 'Turnover'}
+            col_names = {'file_date': 'Datum', 'product_isin': 'ISIN', 'product_short_name': 'Name', 'sector_code': 'Segment', 'rating': 'Rating', 'trade_price': 'Preis', 'trade_yield': 'Yield %', 'trade_size': 'Volumen', 'turnover_chf': 'Turnover'}
             detail_df = detail_df.rename(columns=col_names)
-            st.dataframe(detail_df, hide_index=True, use_container_width=True, height=400)
+            detail_column_config = {
+                'Volumen': st.column_config.NumberColumn(format="%d"),
+                'Turnover': st.column_config.NumberColumn(format="%d"),
+                'Yield %': st.column_config.NumberColumn(format="%.3f%%"),
+            }
+            st.dataframe(detail_df, hide_index=True, width='stretch', height=400, column_config=detail_column_config)
 
             # Export
             csv = filtered_df.to_csv(index=False, sep=';')
@@ -855,23 +971,24 @@ if data_loaded:
             fig = go.Figure()
             fig.add_trace(go.Bar(
                 x=chart_data['Monat'], y=chart_data['Exits'],
-                name='Exits pro Monat', marker_color='#ff6b6b',
+                name='Exits pro Monat', marker_color=COLOR_NEGATIVE,
                 yaxis='y'
             ))
             fig.add_trace(go.Scatter(
                 x=chart_data['Monat'], y=chart_data['Duration'],
                 name='Duration', yaxis='y2',
-                line=dict(color='#4dabf7', width=3),
+                line=dict(color=COLOR_PRIMARY, width=3),
                 mode='lines+markers'
             ))
             fig.update_layout(
-                yaxis=dict(title='Exits', side='left'),
-                yaxis2=dict(title='Duration (Jahre)', overlaying='y', side='right'),
+                **PLOTLY_LAYOUT,
+                yaxis=dict(title='Exits', side='left', gridcolor="#2d3548", zerolinecolor="#2d3548", tickfont=dict(color="#8b949e")),
+                yaxis2=dict(title='Duration (Jahre)', overlaying='y', side='right', gridcolor="#2d3548", zerolinecolor="#2d3548", tickfont=dict(color="#8b949e")),
                 height=350,
-                legend=dict(orientation='h', y=-0.2),
+                legend=dict(orientation='h', y=-0.2, font=dict(color="#8b949e"), bgcolor="rgba(0,0,0,0)"),
                 margin=dict(b=60)
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
             st.markdown("---")
 
@@ -904,7 +1021,7 @@ if data_loaded:
                             'market_cap': 'MCap (Mio)', 'duration': 'Duration', 'rating': 'Rating'
                         }
                         display = display.rename(columns=col_rename)
-                        st.dataframe(display, hide_index=True, use_container_width=True)
+                        st.dataframe(display, hide_index=True, width='stretch')
                 else:
                     st.write(f"{label}: Keine Exits | {month_data['remaining_bonds_count']} Bonds")
 
@@ -940,7 +1057,7 @@ if data_loaded:
                         'Bonds Proj.', 'Gew. % Proj.', 'Dur. Proj.',
                         'Bonds Δ', 'Gew. Δ', 'Dur. Δ'
                     ]
-                    st.dataframe(merged_seg, hide_index=True, use_container_width=True)
+                    st.dataframe(merged_seg, hide_index=True, width='stretch')
 
     # ============ TAB 7: Bond Anpassungen ============
     with tab7:
@@ -983,7 +1100,7 @@ if data_loaded:
             'domicile': ['CH', 'CH', 'DE'],
             'maturity_date': ['31.12.2031', '15.06.2034', '01.03.2029']
         })
-        st.dataframe(template_example, hide_index=True, use_container_width=True)
+        st.dataframe(template_example, hide_index=True, width='stretch')
 
         # Template download
         template_csv = "isin;admission_date;nominal;price;duration;rating;domicile;maturity_date\nCH1234567890;02.03.2026;200000000;100;5.0;A;CH;31.12.2031\nCH0987654321;02.03.2026;500000000;102.5;8.5;AA;CH;15.06.2034\nCH1111222233;02.04.2026;150000000;98;3.2;BBB;DE;01.03.2029"
@@ -1041,7 +1158,7 @@ if data_loaded:
                         preview_display['Rating'] = preview['rating'].values
                     if 'duration' in preview.columns:
                         preview_display['Duration'] = preview['duration'].values
-                    st.dataframe(preview_display, hide_index=True, use_container_width=True)
+                    st.dataframe(preview_display, hide_index=True, width='stretch')
 
                     st.markdown("---")
 
@@ -1089,7 +1206,7 @@ if data_loaded:
                         seg_display.columns = ['Segment', 'Bonds Akt.', 'Bonds Neu',
                                               'Gew. % Akt.', 'Gew. % Neu',
                                               'Dur. Akt.', 'Dur. Neu', 'Gew. Δ', 'Dur. Δ']
-                        st.dataframe(seg_display, hide_index=True, use_container_width=True)
+                        st.dataframe(seg_display, hide_index=True, width='stretch')
 
                     # Uploaded bonds with their weights
                     st.markdown("---")
@@ -1104,7 +1221,7 @@ if data_loaded:
                         ud_display['weight_pct'] = ud_display['weight_pct'].round(4)
                         ud_display.columns = ['ISIN', 'Name', 'Nominal (Mio)', 'MCap (Mio)',
                                             'Duration', 'Rating', 'Gewicht %']
-                        st.dataframe(ud_display, hide_index=True, use_container_width=True)
+                        st.dataframe(ud_display, hide_index=True, width='stretch')
 
                     # Top weight changes
                     st.markdown("---")
@@ -1113,7 +1230,7 @@ if data_loaded:
                     if len(top_changes) > 0:
                         tc_display = top_changes.copy()
                         tc_display.columns = ['ISIN', 'Name', 'Gew. % Akt.', 'Gew. % Neu', 'Gew. Δ']
-                        st.dataframe(tc_display, hide_index=True, use_container_width=True)
+                        st.dataframe(tc_display, hide_index=True, width='stretch')
 
     # ============ TAB 8: Historische Entwicklung ============
     with tab8:
@@ -1217,10 +1334,10 @@ if data_loaded:
                     x=recon_seg['date'],
                     y=recon_seg['duration'],
                     name='Rekonstruierte Duration',
-                    line=dict(color='#1f77b4', width=2.5),
+                    line=dict(color=COLOR_PRIMARY, width=2.5),
                     mode='lines',
                     fill='tozeroy',
-                    fillcolor='rgba(31, 119, 180, 0.08)',
+                    fillcolor='rgba(88, 166, 255, 0.06)',
                     hovertemplate='%{x|%b %Y}<br>Duration: %{y:.3f}y<extra></extra>'
                 ))
 
@@ -1230,17 +1347,18 @@ if data_loaded:
                     y=[seg_dur],
                     name=f'Aktuell (MCap-gew.): {seg_dur:.2f}y',
                     mode='markers',
-                    marker=dict(size=10, color='#d62728', symbol='diamond'),
+                    marker=dict(size=10, color=COLOR_NEGATIVE, symbol='diamond'),
                 ))
 
                 fig_hist_dur.update_layout(
-                    yaxis=dict(title='Duration (Jahre)'),
+                    **PLOTLY_LAYOUT,
+                    yaxis=dict(title='Duration (Jahre)', gridcolor="#2d3548", zerolinecolor="#2d3548", tickfont=dict(color="#8b949e")),
                     height=400,
-                    legend=dict(orientation='h', y=-0.15),
+                    legend=dict(orientation='h', y=-0.15, font=dict(color="#8b949e"), bgcolor="rgba(0,0,0,0)"),
                     margin=dict(b=60),
                     hovermode='x unified'
                 )
-                st.plotly_chart(fig_hist_dur, use_container_width=True)
+                st.plotly_chart(fig_hist_dur, width='stretch')
 
                 st.caption(
                     "Rekonstruktion der Index-Zusammensetzung durch Rückwärts-Anwendung der Forecast-Dateien. "
@@ -1263,7 +1381,7 @@ if data_loaded:
                         y=change_data['dur_change'],
                         name='Δ Duration',
                         marker_color=change_data['dur_change'].apply(
-                            lambda x: 'rgba(44, 160, 44, 0.7)' if x >= 0 else 'rgba(214, 39, 40, 0.7)'
+                            lambda x: 'rgba(0, 212, 170, 0.7)' if x >= 0 else 'rgba(255, 107, 107, 0.7)'
                         ),
                         hovertemplate='%{x|%b %Y}<br>Δ: %{y:+.4f}y<extra></extra>'
                     ))
@@ -1276,18 +1394,19 @@ if data_loaded:
                             x=change_data['date'],
                             y=rolling_avg,
                             name='12M Ø',
-                            line=dict(color='#ff7f0e', width=2, dash='dash'),
+                            line=dict(color=COLOR_ACCENT, width=2, dash='dash'),
                             mode='lines',
                         ))
 
                     fig_change.update_layout(
-                        yaxis=dict(title='Δ Duration (Jahre)', zeroline=True),
+                        **PLOTLY_LAYOUT,
+                        yaxis=dict(title='Δ Duration (Jahre)', zeroline=True, gridcolor="#2d3548", zerolinecolor="#2d3548", tickfont=dict(color="#8b949e")),
                         height=400,
-                        legend=dict(orientation='h', y=-0.15),
+                        legend=dict(orientation='h', y=-0.15, font=dict(color="#8b949e"), bgcolor="rgba(0,0,0,0)"),
                         margin=dict(b=60),
                         hovermode='x unified'
                     )
-                    st.plotly_chart(fig_change, use_container_width=True)
+                    st.plotly_chart(fig_change, width='stretch')
 
                 st.markdown("---")
 
@@ -1305,7 +1424,7 @@ if data_loaded:
                         x=seg_filtered['date'],
                         y=seg_filtered['adm_avg_duration'],
                         name='Admissions Ø Duration',
-                        line=dict(color='#2ca02c', width=2),
+                        line=dict(color=COLOR_POSITIVE, width=2),
                         mode='lines+markers',
                         marker=dict(size=4)
                     ))
@@ -1313,18 +1432,19 @@ if data_loaded:
                         x=seg_filtered['date'],
                         y=seg_filtered['del_avg_duration'],
                         name='Deletions Ø Duration',
-                        line=dict(color='#d62728', width=2),
+                        line=dict(color=COLOR_NEGATIVE, width=2),
                         mode='lines+markers',
                         marker=dict(size=4)
                     ))
                     fig_dur.update_layout(
-                        yaxis=dict(title='Duration (Jahre)'),
+                        **PLOTLY_LAYOUT,
+                        yaxis=dict(title='Duration (Jahre)', gridcolor="#2d3548", zerolinecolor="#2d3548", tickfont=dict(color="#8b949e")),
                         height=350,
-                        legend=dict(orientation='h', y=-0.15),
+                        legend=dict(orientation='h', y=-0.15, font=dict(color="#8b949e"), bgcolor="rgba(0,0,0,0)"),
                         margin=dict(b=60),
                         hovermode='x unified'
                     )
-                    st.plotly_chart(fig_dur, use_container_width=True)
+                    st.plotly_chart(fig_dur, width='stretch')
 
                     st.markdown("---")
 
@@ -1333,17 +1453,18 @@ if data_loaded:
                     fig_count = go.Figure()
                     fig_count.add_trace(go.Bar(
                         x=seg_filtered['date'], y=seg_filtered['adm_count'],
-                        name='Admissions', marker_color='#2ca02c'
+                        name='Admissions', marker_color=COLOR_POSITIVE
                     ))
                     fig_count.add_trace(go.Bar(
                         x=seg_filtered['date'], y=-seg_filtered['del_count'],
-                        name='Deletions', marker_color='#d62728'
+                        name='Deletions', marker_color=COLOR_NEGATIVE
                     ))
                     fig_count.update_layout(
-                        barmode='relative', yaxis=dict(title='Anzahl'),
-                        height=300, legend=dict(orientation='h', y=-0.2), margin=dict(b=60)
+                        **PLOTLY_LAYOUT,
+                        barmode='relative', yaxis=dict(title='Anzahl', gridcolor="#2d3548", zerolinecolor="#2d3548", tickfont=dict(color="#8b949e")),
+                        height=300, legend=dict(orientation='h', y=-0.2, font=dict(color="#8b949e"), bgcolor="rgba(0,0,0,0)"), margin=dict(b=60)
                     )
-                    st.plotly_chart(fig_count, use_container_width=True)
+                    st.plotly_chart(fig_count, width='stretch')
 
                     st.markdown("---")
 
@@ -1352,22 +1473,23 @@ if data_loaded:
                     fig_nom = go.Figure()
                     fig_nom.add_trace(go.Bar(
                         x=seg_filtered['date'], y=seg_filtered['adm_nominal'] / 1e9,
-                        name='Admissions', marker_color='#2ca02c'
+                        name='Admissions', marker_color=COLOR_POSITIVE
                     ))
                     fig_nom.add_trace(go.Bar(
                         x=seg_filtered['date'], y=-seg_filtered['del_nominal'] / 1e9,
-                        name='Deletions', marker_color='#d62728'
+                        name='Deletions', marker_color=COLOR_NEGATIVE
                     ))
                     net_nom = (seg_filtered['adm_nominal'] - seg_filtered['del_nominal']) / 1e9
                     fig_nom.add_trace(go.Scatter(
                         x=seg_filtered['date'], y=net_nom, name='Netto',
-                        line=dict(color='#1f77b4', width=2), mode='lines+markers', marker=dict(size=4)
+                        line=dict(color=COLOR_PRIMARY, width=2), mode='lines+markers', marker=dict(size=4)
                     ))
                     fig_nom.update_layout(
-                        barmode='relative', yaxis=dict(title='Nominal (Mrd CHF)'),
-                        height=350, legend=dict(orientation='h', y=-0.15), margin=dict(b=60)
+                        **PLOTLY_LAYOUT,
+                        barmode='relative', yaxis=dict(title='Nominal (Mrd CHF)', gridcolor="#2d3548", zerolinecolor="#2d3548", tickfont=dict(color="#8b949e")),
+                        height=350, legend=dict(orientation='h', y=-0.15, font=dict(color="#8b949e"), bgcolor="rgba(0,0,0,0)"), margin=dict(b=60)
                     )
-                    st.plotly_chart(fig_nom, use_container_width=True)
+                    st.plotly_chart(fig_nom, width='stretch')
 
                 st.markdown("---")
 
@@ -1401,7 +1523,7 @@ if data_loaded:
                         'Nominal (Mrd)', 'Adm.', 'Del.',
                         'Ø Dur. Adm.', 'Ø Dur. Del.'
                     ]
-                    st.dataframe(tbl, hide_index=True, use_container_width=True, height=400)
+                    st.dataframe(tbl, hide_index=True, width='stretch', height=400)
 
             else:
                 st.warning("Keine Daten für dieses Segment im gewählten Zeitraum")
