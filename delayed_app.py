@@ -10,7 +10,7 @@ import pandas as pd
 import requests
 import plotly.express as px
 from datetime import datetime, timedelta
-from io import StringIO
+from io import StringIO, BytesIO
 
 BASE_URL = "https://www.six-group.com/exchanges/dwh_download/delayed_publication/delayed_publication_{date}.csv"
 
@@ -98,16 +98,12 @@ def enrich_yield(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
-    df.columns = [
-        col.encode("utf-8", "ignore").decode("utf-8")
-        .replace("\ufeff", "").replace("ï»¿", "")
-        .strip().lower().replace(" ", "_")
-        for col in df.columns
-    ]
-    # Ensure consistent name for the bond name column
-    for variant in ["product_short_name", "productshortname", "short_name"]:
-        if variant in df.columns and variant != "product_short_name":
-            df = df.rename(columns={variant: "product_short_name"})
+    BOM_VARIANTS = ["\ufeff", "ï»¿", "ã¯â»â¿", "\xef\xbb\xbf"]
+    def clean(col: str) -> str:
+        for bom in BOM_VARIANTS:
+            col = col.replace(bom, "")
+        return col.strip().lower().replace(" ", "_")
+    df.columns = [clean(c) for c in df.columns]
     return df
 
 
@@ -117,10 +113,11 @@ def fetch_single_day(date: datetime) -> pd.DataFrame | None:
         resp = requests.get(url, timeout=20)
         if resp.status_code != 200:
             return None
-        content = resp.text
-        if not content.strip() or content.strip().startswith("<!DOCTYPE"):
+        raw = resp.content
+        if not raw.strip() or raw.strip().startswith(b"<!DOCTYPE"):
             return None
-        df = pd.read_csv(StringIO(content), sep=";", encoding="utf-8-sig")
+        # Read raw bytes so pandas handles encoding correctly
+        df = pd.read_csv(BytesIO(raw), sep=";", encoding="utf-8-sig")
         df = normalize_columns(df)
         df["file_date"] = date.date()
         return df
