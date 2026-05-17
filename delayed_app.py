@@ -97,6 +97,20 @@ def enrich_yield(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
+    df.columns = [
+        col.encode("utf-8", "ignore").decode("utf-8")
+        .replace("\ufeff", "").replace("ï»¿", "")
+        .strip().lower().replace(" ", "_")
+        for col in df.columns
+    ]
+    # Ensure consistent name for the bond name column
+    for variant in ["product_short_name", "productshortname", "short_name"]:
+        if variant in df.columns and variant != "product_short_name":
+            df = df.rename(columns={variant: "product_short_name"})
+    return df
+
+
 def fetch_single_day(date: datetime) -> pd.DataFrame | None:
     url = BASE_URL.format(date=date.strftime("%Y%m%d"))
     try:
@@ -107,12 +121,7 @@ def fetch_single_day(date: datetime) -> pd.DataFrame | None:
         if not content.strip() or content.strip().startswith("<!DOCTYPE"):
             return None
         df = pd.read_csv(StringIO(content), sep=";", encoding="utf-8-sig")
-        df.columns = (
-            df.columns.str.strip().str.lower()
-            .str.replace(" ", "_")
-            .str.replace("\ufeff", "", regex=False)
-            .str.replace("ï»¿", "", regex=False)
-        )
+        df = normalize_columns(df)
         df["file_date"] = date.date()
         return df
     except Exception:
@@ -149,8 +158,9 @@ def fetch_date_range(start: datetime, end: datetime) -> pd.DataFrame:
 
 
 def render_trade_table(data: pd.DataFrame, max_rows: int = 500):
+    # Name first for visibility
     display_cols = [c for c in [
-        "trade_date", "product_isin", "product_short_name",
+        "trade_date", "product_short_name", "product_isin",
         "product_symbol", "trade_price", "yield_pct", "trade_size",
     ] if c in data.columns]
     display_df = data[display_cols].copy()
@@ -189,12 +199,24 @@ st.markdown("*OTC-Bond-Handelsdaten vom SIX Group — verzögert veröffentlicht
 with st.sidebar:
     st.header("Zeitraum")
     default_end = datetime.now()
-    default_start = default_end - timedelta(days=30)
+    default_start = default_end - timedelta(days=7)
     start_date = st.date_input("Von", value=default_start.date())
     end_date = st.date_input("Bis", value=default_end.date())
-    if st.button("🔄 Neu laden", use_container_width=True):
+    load_clicked = st.button("📥 Daten laden", use_container_width=True, type="primary")
+    if st.button("🔄 Cache leeren", use_container_width=True):
         fetch_date_range.clear()
         st.rerun()
+
+if "data_loaded" not in st.session_state:
+    st.session_state.data_loaded = False
+
+if load_clicked:
+    st.session_state.data_loaded = True
+    fetch_date_range.clear()
+
+if not st.session_state.data_loaded:
+    st.info("Zeitraum wählen und **Daten laden** klicken.")
+    st.stop()
 
 with st.spinner("Lade Handelsdaten..."):
     df = fetch_date_range(
@@ -262,12 +284,15 @@ with chart1:
 
 with chart2:
     st.subheader("Top 15 Bonds nach Turnover")
-    if "product_isin" in filtered.columns and "turnover_chf" in filtered.columns:
-        group_cols = [c for c in ["product_isin", "product_short_name"] if c in filtered.columns]
+    if "turnover_chf" in filtered.columns:
+        has_name = "product_short_name" in filtered.columns
+        group_cols = ["product_isin"] + (["product_short_name"] if has_name else [])
         top = (filtered.groupby(group_cols)["turnover_chf"]
                .sum().reset_index().nlargest(15, "turnover_chf"))
-        label_col = "product_short_name" if "product_short_name" in top.columns else "product_isin"
-        top["label"] = top[label_col].str[:30]
+        if has_name:
+            top["label"] = top["product_short_name"].fillna(top["product_isin"]).str[:35]
+        else:
+            top["label"] = top["product_isin"]
         fig2 = px.bar(top, x="turnover_chf", y="label", orientation="h",
                       labels={"turnover_chf": "Turnover CHF", "label": ""},
                       color_discrete_sequence=[CHART_COLORS[1]])
