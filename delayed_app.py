@@ -58,22 +58,6 @@ LEGEND_STYLE = dict(font=dict(color="#8b949e"), bgcolor="rgba(0,0,0,0)")
 CHART_COLORS = ["#00d4aa", "#58a6ff", "#d4a017", "#ff6b6b", "#8b5cf6", "#06b6d4", "#f59e0b", "#ef4444"]
 
 
-def check_password():
-    if st.session_state.get("authenticated"):
-        return True
-    st.title("SIX Delayed Publications")
-    password = st.text_input("Password", type="password", key="pw")
-    if st.button("Login"):
-        try:
-            if password == st.secrets["passwords"]["dashboard_password"]:
-                st.session_state.authenticated = True
-                st.rerun()
-            else:
-                st.error("Falsches Passwort")
-        except Exception:
-            st.error("Kein Passwort konfiguriert — bitte `st.secrets` einrichten")
-    return False
-
 
 def fetch_single_day(date: datetime) -> pd.DataFrame | None:
     url = BASE_URL.format(date=date.strftime("%Y%m%d"))
@@ -127,9 +111,6 @@ def fetch_date_range(start: datetime, end: datetime) -> pd.DataFrame:
     combined["file_date"] = pd.to_datetime(combined["file_date"])
     return combined
 
-
-if not check_password():
-    st.stop()
 
 st.title("📈 SIX Delayed Publication Trades")
 st.markdown("*OTC-Bond-Handelsdaten vom SIX Group — verzögert veröffentlicht*")
