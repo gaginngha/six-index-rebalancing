@@ -191,9 +191,11 @@ with chart1:
 with chart2:
     st.subheader("Top 15 Bonds nach Turnover")
     if "product_isin" in filtered.columns and "turnover_chf" in filtered.columns:
-        top = (filtered.groupby(["product_isin", "product_short_name"])["turnover_chf"]
+        group_cols = [c for c in ["product_isin", "product_short_name"] if c in filtered.columns]
+        top = (filtered.groupby(group_cols)["turnover_chf"]
                .sum().reset_index().nlargest(15, "turnover_chf"))
-        top["label"] = top["product_short_name"].str[:30]
+        label_col = "product_short_name" if "product_short_name" in top.columns else "product_isin"
+        top["label"] = top[label_col].str[:30]
         fig2 = px.bar(top, x="turnover_chf", y="label", orientation="h",
                       labels={"turnover_chf": "Turnover CHF", "label": ""},
                       color_discrete_sequence=[CHART_COLORS[1]])
