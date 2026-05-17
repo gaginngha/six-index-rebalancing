@@ -228,6 +228,9 @@ if df.empty:
     st.warning("Keine Daten für den gewählten Zeitraum gefunden.")
     st.stop()
 
+with st.expander("🔧 Debug: Spaltennamen", expanded=False):
+    st.write(df.columns.tolist())
+
 # --- Filter ---
 with st.expander("🔍 Filter", expanded=True):
     col1, col2, col3 = st.columns(3)
