@@ -244,17 +244,23 @@ def generate_flow_report(
 
 def estimate_duration_from_maturity(maturity_years: float, coupon: float = 0.5) -> float:
     """
-    Estimate modified duration from maturity for bonds without duration data.
+    Estimate Macaulay duration from maturity for bonds without duration data.
 
-    Uses approximation: Duration ≈ Maturity × (1 - coupon_factor)
-    For low-coupon bonds (typical CHF market): Duration ≈ 0.92 × Maturity
+    Uses the at-par approximation: D = (1/c) × [1 - 1/(1+c)^n]
+    where c = annual coupon rate (decimal) and n = years to maturity.
+    For zero-coupon bonds: D = maturity (exact).
     """
     if pd.isna(maturity_years) or maturity_years <= 0:
         return 0.0
 
-    # Low coupon approximation (CHF bonds typically have low coupons)
-    coupon_factor = 0.08  # ~8% discount from maturity
-    return maturity_years * (1 - coupon_factor)
+    if pd.isna(coupon) or coupon <= 0:
+        return maturity_years  # Zero-coupon: duration equals maturity
+
+    c = coupon / 100.0
+    try:
+        return (1 / c) * (1 - 1 / (1 + c) ** maturity_years)
+    except (ZeroDivisionError, OverflowError):
+        return maturity_years * 0.92  # Fallback
 
 
 def calculate_duration_impact(
@@ -366,7 +372,9 @@ def calculate_duration_impact(
 
             # Estimate market cap (assume price = 100)
             nominal = row.get('nominal', 0) or 0
-            bond_mcap = nominal  # Price at par
+            # Assume issue price = par (100). New bonds typically price near par;
+            # error is typically <1% of market cap.
+            bond_mcap = nominal
 
             admission_duration_contribution += est_duration * bond_mcap
             admission_mcap += bond_mcap

@@ -116,11 +116,16 @@ def calc_segment_duration(df: pd.DataFrame, segment: str = 'total') -> float:
     if 'duration' not in filtered.columns:
         raise ValueError("DataFrame must have 'duration' column")
 
+    # Exclude bonds with missing or negative duration from both numerator and denominator
+    valid = filtered['duration'].notna() & (filtered['duration'] >= 0)
+    mcap = mcap[valid]
+    dur = filtered.loc[valid, 'duration']
+
     total_mcap = mcap.sum()
     if total_mcap == 0:
         return 0.0
 
-    return (filtered['duration'] * mcap).sum() / total_mcap
+    return (dur * mcap).sum() / total_mcap
 
 
 def calc_segment_yield(df: pd.DataFrame, segment: str = 'total') -> float:
@@ -141,11 +146,16 @@ def calc_segment_yield(df: pd.DataFrame, segment: str = 'total') -> float:
     if 'ytw' not in filtered.columns:
         raise ValueError("DataFrame must have 'ytw' column")
 
+    # Exclude bonds with missing yield from both numerator and denominator
+    valid = filtered['ytw'].notna()
+    mcap = mcap[valid]
+    ytw = filtered.loc[valid, 'ytw']
+
     total_mcap = mcap.sum()
     if total_mcap == 0:
         return 0.0
 
-    return (filtered['ytw'] * mcap).sum() / total_mcap
+    return (ytw * mcap).sum() / total_mcap
 
 
 def calc_segment_stats(df: pd.DataFrame, segment: str = 'total') -> Dict:

@@ -78,7 +78,9 @@ def project_index_forward(
             working_df.loc[orig_ok, '_orig_remaining_years']
         ).clip(lower=0)
 
-        # Identify bonds that now breach the threshold (remaining_years < min_residual)
+        # Identify bonds that now breach the threshold.
+        # Strict < (not <=) means a bond at exactly 1.000 years is kept one more month,
+        # matching SIX rules which require a full year of remaining maturity.
         exit_mask = valid_remaining & (working_df['remaining_years'] < min_residual_years)
         exiting_bonds = working_df[exit_mask].copy()
 
