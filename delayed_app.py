@@ -4,6 +4,7 @@ Standalone Streamlit app - fetches OTC bond trade data directly from SIX Group.
 No local index files required.
 """
 
+import re
 import streamlit as st
 import pandas as pd
 import requests
@@ -54,9 +55,46 @@ PLOTLY_LAYOUT = dict(
     hoverlabel=dict(bgcolor="#242b3d", font_color="#e6edf3", bordercolor="#2d3548"),
 )
 YAXIS_STYLE = dict(gridcolor="#2d3548", zerolinecolor="#2d3548", tickfont=dict(color="#8b949e"))
-LEGEND_STYLE = dict(font=dict(color="#8b949e"), bgcolor="rgba(0,0,0,0)")
 CHART_COLORS = ["#00d4aa", "#58a6ff", "#d4a017", "#ff6b6b", "#8b5cf6", "#06b6d4", "#f59e0b", "#ef4444"]
 
+
+def parse_coupon_and_years(name: str) -> tuple[float | None, float | None]:
+    """Extract coupon (%) and remaining years from SIX bond short names like '1.25 SSPITAL 18-26'."""
+    if pd.isna(name):
+        return None, None
+    name = str(name)
+    coupon_match = re.match(r"^([\d.]+)\s", name)
+    coupon = float(coupon_match.group(1)) if coupon_match else None
+    maturity_match = re.search(r"-(\d{2})$", name)
+    if maturity_match:
+        yy = int(maturity_match.group(1))
+        maturity_year = 2000 + yy
+        remaining = max((datetime(maturity_year, 7, 1) - datetime.now()).days / 365.25, 0)
+    else:
+        remaining = None
+    return coupon, remaining
+
+
+def calc_ytm(price: float, coupon: float, remaining_years: float) -> float | None:
+    """Simplified YTM approximation: (C + (100-P)/N) / ((100+P)/2)."""
+    if any(v is None or pd.isna(v) for v in [price, coupon, remaining_years]):
+        return None
+    if remaining_years <= 0 or price <= 0:
+        return None
+    return round((coupon + (100 - price) / remaining_years) / ((100 + price) / 2) * 100, 3)
+
+
+def enrich_yield(df: pd.DataFrame) -> pd.DataFrame:
+    if "product_short_name" not in df.columns or "trade_price" not in df.columns:
+        return df
+    parsed = df["product_short_name"].apply(parse_coupon_and_years)
+    df = df.copy()
+    df["coupon_pct"] = parsed.apply(lambda x: x[0])
+    df["remaining_years"] = parsed.apply(lambda x: x[1])
+    df["yield_pct"] = df.apply(
+        lambda r: calc_ytm(r["trade_price"], r["coupon_pct"], r["remaining_years"]), axis=1
+    )
+    return df
 
 
 def fetch_single_day(date: datetime) -> pd.DataFrame | None:
@@ -102,20 +140,52 @@ def fetch_date_range(start: datetime, end: datetime) -> pd.DataFrame:
     for col in ["trade_price", "trade_size", "turnover_chf"]:
         if col in combined.columns:
             combined[col] = pd.to_numeric(combined[col], errors="coerce")
-    if "estimated_trade_pub_business_date" in combined.columns:
-        combined["estimated_trade_pub_business_date"] = pd.to_datetime(
-            combined["estimated_trade_pub_business_date"], errors="coerce"
-        )
-    if "trade_date" in combined.columns:
-        combined["trade_date"] = pd.to_datetime(combined["trade_date"], errors="coerce")
+    for col in ["estimated_trade_pub_business_date", "trade_date"]:
+        if col in combined.columns:
+            combined[col] = pd.to_datetime(combined[col], errors="coerce")
     combined["file_date"] = pd.to_datetime(combined["file_date"])
+    combined = enrich_yield(combined)
     return combined
 
+
+def render_trade_table(data: pd.DataFrame, max_rows: int = 500):
+    display_cols = [c for c in [
+        "trade_date", "product_isin", "product_short_name",
+        "product_symbol", "trade_price", "yield_pct", "trade_size",
+    ] if c in data.columns]
+    display_df = data[display_cols].copy()
+    if "trade_date" in display_df.columns:
+        display_df = display_df.sort_values("trade_date", ascending=False)
+    if max_rows:
+        display_df = display_df.head(max_rows)
+
+    col_config = {}
+    if "trade_size" in display_df.columns:
+        col_config["trade_size"] = st.column_config.NumberColumn("Trade Size", format="%,.0f")
+    if "trade_price" in display_df.columns:
+        col_config["trade_price"] = st.column_config.NumberColumn("Preis", format="%.2f")
+    if "yield_pct" in display_df.columns:
+        col_config["yield_pct"] = st.column_config.NumberColumn("Yield %", format="%.3f")
+    if "product_short_name" in display_df.columns:
+        col_config["product_short_name"] = st.column_config.TextColumn("Name")
+    if "product_isin" in display_df.columns:
+        col_config["product_isin"] = st.column_config.TextColumn("ISIN")
+
+    st.dataframe(display_df, use_container_width=True, height=400, column_config=col_config)
+    st.download_button(
+        "⬇️ CSV exportieren",
+        data=display_df.to_csv(index=False),
+        file_name=f"delayed_trades_export.csv",
+        mime="text/csv",
+        key=f"dl_{len(data)}"
+    )
+
+
+# ── App ──────────────────────────────────────────────────────────────────────
 
 st.title("📈 SIX Delayed Publication Trades")
 st.markdown("*OTC-Bond-Handelsdaten vom SIX Group — verzögert veröffentlicht*")
 
-# --- Datumsauswahl in der Sidebar ---
 with st.sidebar:
     st.header("Zeitraum")
     default_end = datetime.now()
@@ -127,8 +197,10 @@ with st.sidebar:
         st.rerun()
 
 with st.spinner("Lade Handelsdaten..."):
-    df = fetch_date_range(datetime.combine(start_date, datetime.min.time()),
-                          datetime.combine(end_date, datetime.min.time()))
+    df = fetch_date_range(
+        datetime.combine(start_date, datetime.min.time()),
+        datetime.combine(end_date, datetime.min.time())
+    )
 
 if df.empty:
     st.warning("Keine Daten für den gewählten Zeitraum gefunden.")
@@ -140,21 +212,18 @@ with st.expander("🔍 Filter", expanded=True):
     with col1:
         isin_search = st.text_input("ISIN / Bond-Name suchen", placeholder="z.B. CH0550...")
     with col2:
-        min_turnover = st.number_input("Min. Turnover CHF", min_value=0, value=0, step=100_000,
-                                       format="%d")
+        min_turnover = st.number_input("Min. Turnover CHF", min_value=0, value=0, step=100_000, format="%d")
     with col3:
         max_rows = st.selectbox("Max. Zeilen", [100, 500, 1000, 5000, 0], index=1,
                                 format_func=lambda x: "Alle" if x == 0 else f"{x:,}")
 
 filtered = df.copy()
-
 if isin_search:
     mask = (
         filtered.get("product_isin", pd.Series(dtype=str)).str.contains(isin_search, case=False, na=False) |
         filtered.get("product_short_name", pd.Series(dtype=str)).str.contains(isin_search, case=False, na=False)
     )
     filtered = filtered[mask]
-
 if min_turnover > 0 and "turnover_chf" in filtered.columns:
     filtered = filtered[filtered["turnover_chf"] >= min_turnover]
 
@@ -180,13 +249,16 @@ chart1, chart2 = st.columns(2)
 
 with chart1:
     st.subheader("Täglicher Turnover")
+    selected_date = None
     if "file_date" in filtered.columns and "turnover_chf" in filtered.columns:
         daily = filtered.groupby("file_date")["turnover_chf"].sum().reset_index()
         fig = px.bar(daily, x="file_date", y="turnover_chf",
                      labels={"file_date": "Datum", "turnover_chf": "Turnover CHF"},
                      color_discrete_sequence=[CHART_COLORS[0]])
         fig.update_layout(height=320, yaxis=YAXIS_STYLE, **PLOTLY_LAYOUT)
-        st.plotly_chart(fig, use_container_width=True)
+        event = st.plotly_chart(fig, use_container_width=True, on_select="rerun", key="daily_chart")
+        if event and event.selection and event.selection.get("points"):
+            selected_date = event.selection["points"][0].get("x")
 
 with chart2:
     st.subheader("Top 15 Bonds nach Turnover")
@@ -199,32 +271,21 @@ with chart2:
         fig2 = px.bar(top, x="turnover_chf", y="label", orientation="h",
                       labels={"turnover_chf": "Turnover CHF", "label": ""},
                       color_discrete_sequence=[CHART_COLORS[1]])
-        fig2.update_layout(height=320, yaxis=dict(**YAXIS_STYLE, autorange="reversed"),
-                           **PLOTLY_LAYOUT)
+        fig2.update_layout(height=320, yaxis=dict(**YAXIS_STYLE, autorange="reversed"), **PLOTLY_LAYOUT)
         st.plotly_chart(fig2, use_container_width=True)
 
-# --- Tabelle ---
+# --- Tagesdrill-down wenn Bar angeklickt ---
+if selected_date:
+    try:
+        sel_dt = pd.to_datetime(selected_date)
+        day_df = filtered[filtered["file_date"].dt.date == sel_dt.date()]
+        st.markdown("---")
+        st.subheader(f"Trades am {sel_dt.strftime('%d.%m.%Y')} — {len(day_df):,} Trades")
+        render_trade_table(day_df, max_rows=max_rows)
+    except Exception:
+        pass
+
+# --- Gesamttabelle ---
 st.markdown("---")
-st.subheader("Handelsdaten")
-
-display_cols = [c for c in [
-    "file_date", "trade_date", "product_isin", "product_short_name",
-    "product_symbol", "trade_price", "trade_size", "turnover_chf"
-] if c in filtered.columns]
-
-display_df = filtered[display_cols].copy()
-if max_rows:
-    display_df = display_df.head(max_rows)
-
-st.dataframe(
-    display_df.sort_values("file_date", ascending=False) if "file_date" in display_df.columns else display_df,
-    use_container_width=True,
-    height=400
-)
-
-st.download_button(
-    "⬇️ CSV exportieren",
-    data=filtered[display_cols].to_csv(index=False),
-    file_name=f"delayed_trades_{start_date}_{end_date}.csv",
-    mime="text/csv"
-)
+st.subheader("Alle Handelsdaten")
+render_trade_table(filtered, max_rows=max_rows)
